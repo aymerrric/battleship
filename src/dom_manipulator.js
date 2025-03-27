@@ -52,31 +52,34 @@ const DOMManipulator = function (player1, player2) {
         });
     }
 
-    document.querySelector("table").addEventListener("click", event => {
-        const cell = event.target;
-        const cellID = cell.getAttribute("id");
-        if (cellID) {
-            const x = cellID[2];
-            const y = cellID[4];
-            GameLogic.playTurn([x, y]);
-        }
-        if (titleField.textContent === "Your Field") {
+    function setEventListener() {
+        document.querySelector("table").addEventListener("click", event => {
+            const cell = event.target;
+            const cellID = cell.getAttribute("id");
+            if (cellID) {
+                const x = cellID[2];
+                const y = cellID[4];
+                GameLogic.playTurn([x, y]);
+            }
+            if (titleField.textContent === "Your Field") {
+                displayYourField();
+            } else {
+                displayAdversaryField();
+            }
+        });
+        document.querySelector("#your-field").addEventListener("click", () => {
             displayYourField();
-        } else {
-            displayAdversaryField();
-        }
-    });
+            titleField.textContent = "Your Field";
+        });
+        document
+            .querySelector("#opposite-field")
+            .addEventListener("click", () => {
+                displayAdversaryField();
+                titleField.textContent = "Your Enemy's Field";
+            });
+    }
 
-    document.querySelector("#your-field").addEventListener("click", () => {
-        displayYourField();
-        titleField.textContent = "Your Field";
-    });
-    document.querySelector("#opposite-field").addEventListener("click", () => {
-        displayAdversaryField();
-        titleField.textContent = "Your Enemy's Field";
-    });
-
-    return { displayYourField, displayAdversaryField };
+    return { displayYourField, displayAdversaryField, setEventListener };
 };
 
 export default DOMManipulator;

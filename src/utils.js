@@ -22,8 +22,46 @@ function getCoordinates() {
 }
 
 function getOrientation() {
-    const orientation = prompt("Orientation: ");
-    return Promise.resolve(orientation);
+    return new Promise(resolve => {
+        console.log("banane");
+        const body = document.querySelector("body");
+        const dialog = document.createElement("dialog");
+        dialog.classList.add("orientation");
+        const selector1 = document.createElement("div");
+        const selector2 = document.createElement("div");
+        const selector3 = document.createElement("div");
+        const selector4 = document.createElement("div");
+        const selectorContainer = document.createElement("div");
+        selector1.classList.add("selector", "selector1");
+        selector2.classList.add("selector", "selector2");
+        selector3.classList.add("selector", "selector3");
+        selector4.classList.add("selector", "selector4");
+        selector1.addEventListener("click", () => {
+            resolve("top");
+            dialog.close();
+            body.removeChild(dialog);
+        });
+        selector2.addEventListener("click", () => {
+            resolve("left");
+            dialog.close();
+            body.removeChild(dialog);
+        });
+        selector3.addEventListener("click", () => {
+            resolve("bottom");
+            dialog.close();
+            body.removeChild(dialog);
+        });
+        selector4.addEventListener("click", () => {
+            resolve("right");
+            dialog.close();
+            body.removeChild(dialog);
+        });
+        selectorContainer.append(selector1, selector2, selector3, selector4);
+        selectorContainer.classList.add("selector-container");
+        dialog.append(selectorContainer);
+        body.appendChild(dialog);
+        dialog.showModal();
+    });
 }
 
 export {

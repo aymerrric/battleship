@@ -7,9 +7,14 @@ import {
     getOrientation,
     getCoordinates
 } from "./utils";
-
 const GameLogic = (function () {
-    const boatLength = [5];
+    let dom_manipulator;
+
+    function setDomManipulator(DOMManipulator) {
+        dom_manipulator = DOMManipulator;
+    }
+
+    const boatLength = [5, 4, 3, 3];
     let Player1;
     let Player2;
 
@@ -32,7 +37,9 @@ const GameLogic = (function () {
     async function placeChosenBoats(player) {
         for (length of boatLength) {
             let placed = 0;
-            while (placed === 0) {
+            let attempt = 0;
+            const MAX_ATTEMP = 5;
+            while (placed === 0 && attempt < MAX_ATTEMP) {
                 const orientation = await getOrientation();
                 const coordinates = await getCoordinates();
                 console.log(orientation);
@@ -42,6 +49,15 @@ const GameLogic = (function () {
                     orientation,
                     length
                 );
+                if (placed === 0) {
+                    Logger.log("Invalid placement");
+                }
+                attempt++;
+            }
+            if (placed === 0) {
+                throw new Error("Please make the boats placed well");
+            } else {
+                dom_manipulator.displayYourField();
             }
         }
     }
@@ -77,7 +93,13 @@ const GameLogic = (function () {
         }
     }
 
-    return { createPlayer, playTurn, getPlayer, startTheGame };
+    return {
+        createPlayer,
+        playTurn,
+        getPlayer,
+        startTheGame,
+        setDomManipulator
+    };
 })();
 
 export default GameLogic;
