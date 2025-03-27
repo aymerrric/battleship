@@ -1,9 +1,12 @@
 const Logger = (function () {
-    function log(message) {
-        console.log(message);
+    function log(event) {
+        console.log(event);
+    }
+    function displayWin(name) {
+        console.log(`${name} win`);
     }
 
-    return { log };
+    return { log, displayWin };
 })();
 
 export default Logger;

@@ -15,7 +15,7 @@ class Gameboard {
     createShip(coordinates, orientation, length) {
         // must test if ship can be placed
         if (!this.isValidPlace(coordinates, orientation, length)) {
-            return;
+            return 0;
         }
         // Create the ship, update the counter and update the field
         const ship = new Ship(length);
@@ -25,6 +25,7 @@ class Gameboard {
         if (length >= 1) {
             this.#numberOfBoatAlived++;
         }
+        return 1;
     }
 
     isValidPlace(coordinates, orientation, length) {
@@ -144,19 +145,22 @@ class Gameboard {
         return { total: this.#numberOfBoat, alive: this.#numberOfBoatAlived };
     }
     receiveAttack(coordinates) {
+        // return 0 if nothing was touched 1 otherwise
         const [x, y] = coordinates;
         if (x < 0 || x > 9 || y < 0 || y > 9) {
             throw new Error("The attacked case is out of the gameboard");
         }
         if (this.#attacked.includes(coordinates)) {
             Logger.log("The case was already hit");
-            return;
+            return 0;
         }
         // The case is in the gameBoard and was not already hit
-        if (this.#field[(x, y)] === 0) {
+        if (this.#field[y][x] === 0) {
             Logger.log("In the water");
+            this.#attacked.push([x, y]);
+            return 0;
         } else {
-            const shipHitNumber = this.#field[(x, y)];
+            const shipHitNumber = this.#field[y][x];
             const ship = this.ships.get(shipHitNumber);
             ship.getHits();
             Logger.log("A ship has been hit");
@@ -164,11 +168,16 @@ class Gameboard {
                 this.#numberOfBoatAlived--;
                 Logger.log("A ship has been sunk");
             }
+            this.#attacked.push([x, y]);
+            return 1;
         }
-        this.#attacked.push([x, y]);
     }
     renderField() {
         return this.#field;
+    }
+
+    renderAttackedCases() {
+        return this.#attacked;
     }
 }
 
